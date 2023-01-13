@@ -1,0 +1,50 @@
+<?php
+//1. POSTデート取得
+// $name = $_POST["name"];
+// $age = $_POST["age"];
+$genre = $_POST["genre"];
+$title = $_POST["title"];
+$review = $_POST["review"];
+$date = $_POST["date"];
+$coment = $_POST["coment"];
+
+
+//2. DB接続
+require_once('funcs.php');
+$dbConn = db_conn();
+
+//3. データ登録SQL作成
+
+//3-1. SQL文を用意
+$stmt = $dbConn->prepare(
+    "INSERT INTO
+    movie_log(id,  genre , title , review , coment, date)
+    VALUES(null , :genre , :title , :review , :coment, :date)");
+
+//3-2. バインド変数を用意
+// Integer 数値の場合 PDO::PARAM_INT
+// String文字列の場合 PDO:: PARAM_STR
+
+// $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+// $stmt->bindValue(':age', $age, PDO::PARAM_STR);
+$stmt->bindValue(':genre', $genre, PDO::PARAM_STR);
+$stmt->bindValue(':title', $title, PDO::PARAM_STR);
+$stmt->bindValue(':review', $review, PDO::PARAM_STR);
+$stmt->bindValue(':coment', $coment, PDO::PARAM_STR);
+$stmt->bindValue(':date', $date, PDO::PARAM_STR);
+
+//3. 実行
+$status = $stmt->execute();
+
+//4. データ登録処理
+if($status === false){
+    //SQL実行時にエラーがある場合(エラーオブジェクト取得して表示)
+    $error = $stmt->errorInfo();
+    exit('ErrorMessage:' . $error[2]);
+}else{
+    //5. input.phpへリダイレクト
+    header("Location:read.php");
+}
+
+
+?>
